@@ -1,4 +1,4 @@
-# Human-in-the-loop machine learning for automating title, abstract, and full-text screening in knowledge synthesis with community engagement
+# Human-in-the-loop machine learning with community engagement reduces title, abstract, and full-text screening workload in knowledge synthesis 
 
 This repository contains code and documentation for the machine-assisted screening workflow used in a scoping review of participatory approaches in infectious disease modeling.
 
