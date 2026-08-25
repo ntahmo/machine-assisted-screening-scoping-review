@@ -700,6 +700,11 @@ sens <- yardstick::recall_vec(  truth = test_eval$Label, estimate = test_eval$.p
                                 event_level = "first")      # "Included" is the 1st level
 spec <- yardstick::spec_vec(    truth = test_eval$Label, estimate = test_eval$.pred_class,
                                 event_level = "first")
+prec <- yardstick::precision_vec(truth = test_eval$Label, estimate = test_eval$.pred_class,
+                                event_level = "first")
+
+f1   <- yardstick::f_meas_vec(  truth = test_eval$Label, estimate = test_eval$.pred_class,
+                                event_level = "first")
 
 # AUC (point) and DeLong 95% CI
 truth_bin <- as.numeric(test_eval$Label == "Included")
@@ -726,23 +731,29 @@ boot_mat <- replicate(B, {
   c(
     acc  = yardstick::accuracy_vec(truth = truth_b, estimate = pred_b),
     sens = yardstick::recall_vec(  truth = truth_b, estimate = pred_b, event_level = "first"),
-    spec = yardstick::spec_vec(    truth = truth_b, estimate = pred_b, event_level = "first")
+    spec = yardstick::spec_vec(    truth = truth_b, estimate = pred_b, event_level = "first"),
+    prec = yardstick::precision_vec(truth = truth_b, estimate = pred_b, event_level = "first"),
+    f1   = yardstick::f_meas_vec(truth = truth_b, estimate = pred_b, event_level = "first")
   )
 })
 
 ci_acc  <- stats::quantile(boot_mat["acc", ],  probs = c(0.025, 0.975), na.rm = TRUE)
 ci_sens <- stats::quantile(boot_mat["sens", ], probs = c(0.025, 0.975), na.rm = TRUE)
 ci_spec <- stats::quantile(boot_mat["spec", ], probs = c(0.025, 0.975), na.rm = TRUE)
+ci_prec <- stats::quantile(boot_mat["prec", ], probs = c(0.025, 0.975), na.rm = TRUE)
+ci_f1   <- stats::quantile(boot_mat["f1", ],   probs = c(0.025, 0.975), na.rm = TRUE)
 
 # --- Neat printout ---
 cat("\nPoint estimates (TEST @ τ*):\n")
 cat(sprintf("Accuracy   = %.3f\nSensitivity= %.3f\nSpecificity= %.3f\nAUC        = %.3f\n",
-            acc, sens, spec, auc_pt))
+            acc, sens, spec, prec, f1, auc_pt))
 
 cat("\n95% Bootstrap CIs (TEST @ τ*):\n")
 cat(sprintf("Accuracy    95%% CI: [%.3f, %.3f]\n", ci_acc[1],  ci_acc[2]))
 cat(sprintf("Sensitivity 95%% CI: [%.3f, %.3f]\n", ci_sens[1], ci_sens[2]))
 cat(sprintf("Specificity 95%% CI: [%.3f, %.3f]\n", ci_spec[1], ci_spec[2]))
+cat(sprintf("Precision   95%% CI: [%.3f, %.3f]\n", ci_prec[1], ci_prec[2]))
+cat(sprintf("F1          95%% CI: [%.3f, %.3f]\n", ci_f1[1],   ci_f1[2]))
 
 cat("\nAUC 95% CI (DeLong):\n")
 cat(sprintf("[%.3f, %.3f]\n", as.numeric(auc_ci[1]), as.numeric(auc_ci[3])))
