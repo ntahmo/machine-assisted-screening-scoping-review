@@ -4,7 +4,7 @@ This repository contains code and documentation for the machine-assisted screeni
 
 ## Repository structure
 - `scripts/` preprocessing, modeling, and plotting scripts
-- `title&abstract_citations/` table of citations reviewed by titles and abstract
+- `title&abstract_citations/` table of citations reviewed by title and abstract
 - `fulltext_citations/` table of citations reviewed by full-text 
 - `outputs/` figures and model outputs
 
